@@ -134,10 +134,10 @@ TextureImporter:
       name: GameItems_0
       rect:
         serializedVersion: 2
-        x: 5
-        y: 296
-        width: 211
-        height: 216
+        x: 0
+        y: 167
+        width: 216
+        height: 144
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -155,8 +155,8 @@ TextureImporter:
       name: LeftTop
       rect:
         serializedVersion: 2
-        x: 1
-        y: 202
+        x: 491
+        y: 217
         width: 83
         height: 83
       alignment: 0
@@ -176,8 +176,8 @@ TextureImporter:
       name: LeftBot
       rect:
         serializedVersion: 2
-        x: 1
-        y: 101
+        x: 490
+        y: 117
         width: 84
         height: 83
       alignment: 0
@@ -197,8 +197,8 @@ TextureImporter:
       name: Left
       rect:
         serializedVersion: 2
-        x: 1
-        y: 0
+        x: 493
+        y: 16
         width: 74
         height: 89
       alignment: 0
@@ -215,13 +215,34 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Light
+      name: GameItems_1
       rect:
         serializedVersion: 2
-        x: 236
-        y: 321
-        width: 211
-        height: 190
+        x: 235
+        y: 166
+        width: 215
+        height: 145
+      alignment: 0
+      pivot: {x: 0.5, y: 0.5}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: ac39470abe33d0e47bb81365ff6d5369
+      internalID: -1219084347
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GameItems_2
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 213
+        height: 140
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -229,8 +250,29 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4b366c9651a23d447b8208f68df82c6f
-      internalID: 521011738
+      spriteID: 724f1374734d7524197953a29e3f4889
+      internalID: 1697128064
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GameItems_3
+      rect:
+        serializedVersion: 2
+        x: 233
+        y: 1
+        width: 215
+        height: 139
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 30588560c7c432d4caf8339cf2d0ec80
+      internalID: -812259528
       vertices: []
       indices: 
       edges: []
@@ -247,6 +289,9 @@ TextureImporter:
     secondaryTextures: []
     nameFileIdTable:
       GameItems_0: 255219232
+      GameItems_1: -1219084347
+      GameItems_2: 1697128064
+      GameItems_3: -812259528
       Left: -1010787705
       LeftBot: -706057670
       LeftTop: 1561654783
