@@ -82,6 +82,7 @@ public class GameManager : Singleton<GameManager>
     public void GameOver()
     {
         TransitToState(GameState.OVER);
+        Debug.Log("Game over");
     }
 
     public void RestartGame()

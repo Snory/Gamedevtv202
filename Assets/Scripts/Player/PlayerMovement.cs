@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 public class PlayerMovement : MonoBehaviour
 {
@@ -17,6 +18,13 @@ public class PlayerMovement : MonoBehaviour
 
     [SerializeField]
     private GeneralEvent _gameSessionStateEnd;
+
+    [SerializeField]
+    private GeneralEvent _requestForNode;
+
+    [SerializeField]
+    private GeneralEvent _entityPrepared;
+
 
     private Node _currentNode;
 
@@ -124,5 +132,22 @@ public class PlayerMovement : MonoBehaviour
     private void RaiseHighLightRequest()
     {
         _gridHighLightRequest.Raise(new HexGridHighlightRequestEventArgs(_currentNode, 2, NodeHighLightSource.PLAYER));
+    }
+
+    public void OnEntityPrepared(EventArgs args)
+    {
+        EntityPreparedEventArgs entityPreparedEventArgs = (EntityPreparedEventArgs)args;
+
+        if (entityPreparedEventArgs.EntityPrepareType == EntityPrepareType.GRID && entityPreparedEventArgs.Prepared)
+        {
+            _requestForNode.Raise(new HexGridNodeRequestEventArgs(_playerStartingPosition, OnNodeFound));
+        }
+    }
+
+    private void OnNodeFound(Node node, int range)
+    {
+        _currentNode = node;
+        node.SetPlayerObject(this.gameObject);
+        _entityPrepared.Raise(new EntityPreparedEventArgs(EntityPrepareType.PLAYER, true));
     }
 }

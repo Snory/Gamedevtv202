@@ -73,7 +73,17 @@ public class MonsterMover : MonoBehaviour
         EndTurn();
     }
 
+    public void OnGameObjectDestroyed(EventArgs args)
+    {
+        ObjectDestroyedEventArgs objectDestroyedEventArgs = (ObjectDestroyedEventArgs) args;
 
+        MonsterMovement monsterMovement = objectDestroyedEventArgs.DestroyedObject.GetComponent<MonsterMovement>();
+
+        if(monsterMovement != null)
+        {
+            _monsterMovements.Remove(monsterMovement);
+        }
+    }
 
     private void EndTurn()
     {

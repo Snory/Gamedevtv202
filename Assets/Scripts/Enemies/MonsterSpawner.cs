@@ -44,7 +44,7 @@ public class MonsterSpawner : MonoBehaviour
 
             Node n = nodes[randomNodeIndex];
 
-            if (!n.IsOccupied() || n.GridPosition != new Vector2Int(0,0))
+            if (!n.IsOccupied())
             {
                 GameObject enemyobject = Instantiate(_monsterPrefab, n.WorldPosition, Quaternion.identity, this.transform);
                 MonsterMovement monsterMovement = enemyobject.GetComponent<MonsterMovement>();

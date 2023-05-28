@@ -42,8 +42,12 @@ public class HexGridMovement : MonoBehaviour
         if (gridMovementRequestEventArgs.MoveGrid && targetnode != null)
         {
             Node currentCenterNode = _grid.GetNodeByWorldPosition(_grid.transform.position);
-            Node oppositeToTargetNode = _grid.GetNodeInDirection(currentCenterNode, _grid.GetGridOppositeDirection(gridMovementRequestEventArgs.Direction));
-            _grid.SetGridWorldPosition(oppositeToTargetNode.WorldPosition);
+
+            if(currentCenterNode != null)
+            {
+                Node oppositeToTargetNode = _grid.GetNodeInDirection(currentCenterNode, _grid.GetGridOppositeDirection(gridMovementRequestEventArgs.Direction));
+                _grid.SetGridWorldPosition(oppositeToTargetNode.WorldPosition);
+            }
         }        
 
 

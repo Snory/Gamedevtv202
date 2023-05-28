@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public enum GameSessionState { PLAYER_MOVEMENT, GRID_RECALCULATE, ENEMY_MOVEMENT }
-public enum EntityPrepareType { GRID, MONSTERS }
+public enum EntityPrepareType { GRID, MONSTERS, PLAYER }
 
 public class GameSessionStateManager : MonoBehaviour
 {

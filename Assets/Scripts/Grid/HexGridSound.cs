@@ -11,7 +11,7 @@ public class HexGridSound : MonoBehaviour
 
     public void OnGridNodeSteppedOnto(EventArgs args)
     {
-        HexGridNodeEventArgs hexGridNodeEventArgs = args as HexGridNodeEventArgs;
+        HexGridSteppedOntoNodeEventArgs hexGridNodeEventArgs = args as HexGridSteppedOntoNodeEventArgs;
 
         AudioClip clip = hexGridNodeEventArgs.Node.GetClip();
 

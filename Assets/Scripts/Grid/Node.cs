@@ -89,6 +89,11 @@ public class Node : IEquatable<Node>
         }
     }
 
+    public GameObject GetEnemyObject()
+    {
+        return _enemyObject;
+    }
+
     public void SetHightLight(bool hightLight, float alpha = 1, NodeHighLightSource highLightSource = NodeHighLightSource.NONE)
     {
         _gameObject.SetActive(hightLight);
@@ -153,6 +158,6 @@ public class Node : IEquatable<Node>
 
     public override string ToString()
     {
-        return $"WorldPosition: {WorldPosition.ToString()}, GridPosition: {GridPosition.ToString()}";
+        return $"RequestedNodeWorldPosition: {WorldPosition.ToString()}, RequestedGridPosition: {GridPosition.ToString()}";
     }
 }

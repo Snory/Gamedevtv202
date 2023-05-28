@@ -35,7 +35,7 @@ public class MonsterMovement : MonoBehaviour
         _currentNode.SetEnemyObject(this.gameObject);
         this.transform.position = n.WorldPosition;
 
-        _nodeSteppedOnto.Raise(new HexGridNodeEventArgs(_currentNode));
+        _nodeSteppedOnto.Raise(new HexGridSteppedOntoNodeEventArgs(_currentNode));
     }
 
     public void Move(HexGridDirection direction)
@@ -47,6 +47,4 @@ public class MonsterMovement : MonoBehaviour
     {
         _gridMovementRequest.Raise(new HexGridMovementRequestEventArgs(_currentNode.GridPosition, OnGridMovement));
     }
-
-
 }
