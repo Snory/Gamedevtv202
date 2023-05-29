@@ -14,13 +14,13 @@ public class MonsterSpawner : MonoBehaviour
     private GameObject _monsterPrefab;
 
     [SerializeField]
-    private int _monstersToGenerate;
-
-    [SerializeField]
     private GeneralEvent _monsterGenerated;
 
     [SerializeField]
     private GeneralEvent _entityPrepared;
+
+    [SerializeField]
+    private int[] _monsterPerLevel;
 
     public void OnEntityPrepared(EventArgs args)
     {
@@ -38,13 +38,19 @@ public class MonsterSpawner : MonoBehaviour
         List<Node> nodes = _grid.GetNodeList();
         List<GameObject> monsters = new List<GameObject>();
 
-        while (monstersGenerated < Mathf.Min(_monstersToGenerate, nodes.Count - 1))
+        int currentLevel = _monsterPerLevel.Length;
+        if (LevelManager.Instance.GetCurrentLevel() < _monsterPerLevel.Length)
+        {
+            currentLevel = LevelManager.Instance.GetCurrentLevel();
+        }
+
+        while (monstersGenerated < Mathf.Min(_monsterPerLevel[currentLevel], nodes.Count - 1))
         {
             int randomNodeIndex = Random.Range(0, nodes.Count);
 
             Node n = nodes[randomNodeIndex];
 
-            if (!n.IsOccupied())
+            if (!n.IsOccupied() && n.GridPosition != new Vector2Int(0,0))
             {
                 GameObject enemyobject = Instantiate(_monsterPrefab, n.WorldPosition, Quaternion.identity, this.transform);
                 MonsterMovement monsterMovement = enemyobject.GetComponent<MonsterMovement>();
@@ -59,4 +65,6 @@ public class MonsterSpawner : MonoBehaviour
         _monsterGenerated.Raise(new MonstersGeneratedEventArgs(monsters));
         _entityPrepared.Raise(new EntityPreparedEventArgs(EntityPrepareType.MONSTERS, true));
     }
+
+
 }

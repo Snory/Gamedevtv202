@@ -4,13 +4,11 @@ using UnityEngine;
 
 public enum NodeHighLightSource { NONE, PLAYER }
 
-public class Node : IEquatable<Node>
+public class Node : MonoBehaviour, IEquatable<Node>
 {
-    private GameObject _gameObject;
     private SpriteRenderer _renderer;
     public Vector2Int GridPosition;
     public Vector2 WorldPosition;
-    private int _sortingOrder;
     private AudioClip _clip;
 
     private GameObject _playerObject;
@@ -21,8 +19,20 @@ public class Node : IEquatable<Node>
     public float SeachPriority;
     public Node ParentNode;
 
+    private Animator _animator;
+
+    private Color _defaultColor;
+    private Color _tempColor;
+    private bool _animPlaying;
+
 
     public NodeHighLightSource HighLightSource { get; private set; }
+    private void Awake()
+    {
+        _renderer = this.GetComponentInChildren<SpriteRenderer>();
+        _animator = this.GetComponent<Animator>();
+        HighLightSource = NodeHighLightSource.NONE;        
+    }
 
     public void CleanMovementCosts()
     {
@@ -32,21 +42,13 @@ public class Node : IEquatable<Node>
         ParentNode = null;
     }
 
-    public Node(Vector2Int gridPosition, Vector2 worldPosition, int sortingOrder = 0)
+    public void SetNode(Sprite sprite, Vector2Int gridPosition, Vector3 worldPosition)
     {
+        _renderer.sprite = sprite;
+        _renderer.sortingOrder = gridPosition.y;
         GridPosition = gridPosition;
         WorldPosition = worldPosition;
-        _sortingOrder = sortingOrder;
-        HighLightSource = NodeHighLightSource.NONE;
-
-    }
-
-    public void SetGameObject(GameObject gameObject, Sprite sprite)
-    {
-        _gameObject = gameObject;
-        _renderer = _gameObject.GetComponent<SpriteRenderer>();
-        _renderer.sprite = sprite;
-        _renderer.sortingOrder = _sortingOrder;
+        _defaultColor = _renderer.color;
     }
 
     public bool IsOccupiedByPlayer()
@@ -74,11 +76,6 @@ public class Node : IEquatable<Node>
         return _enemyObject != null || _playerObject != null;
     }
 
-    public GameObject GetGameObject()
-    {
-        return _gameObject;
-    }
-
     public void SetWorldInPosition(Vector2 worldPosition)
     {
         WorldPosition = worldPosition;
@@ -96,8 +93,8 @@ public class Node : IEquatable<Node>
 
     public void SetHightLight(bool hightLight, float alpha = 1, NodeHighLightSource highLightSource = NodeHighLightSource.NONE)
     {
-        _gameObject.SetActive(hightLight);
-        _renderer.color = new Color(_renderer.color.r, _renderer.color.g, _renderer.color.b, alpha);
+        this.gameObject.SetActive(hightLight);
+        _renderer.color = new Color(_defaultColor.r, _defaultColor.g, _defaultColor.b, alpha);
         HighLightSource = highLightSource;
     }
 
@@ -150,6 +147,35 @@ public class Node : IEquatable<Node>
         return !node1.Equals(node2);
     }
 
+    public void CorrectHit()
+    {
+        if (!_animPlaying)
+        {
+            _animPlaying = true;
+            _tempColor = _renderer.color;
+            _renderer.color = new Color(_renderer.color.r, _renderer.color.g, _renderer.color.b, 1);
+            _animator.SetTrigger("CorrectHit");
+        }
+    }
+
+    public void BadHit()
+    {
+        if (!_animPlaying)
+        {
+            _animPlaying = true;
+            _tempColor = _renderer.color;
+            _renderer.color = new Color(_renderer.color.r, _renderer.color.g, _renderer.color.b, 1);
+            _animator.SetTrigger("BadHit");
+
+        }
+    }
+
+    public void AnimationEnded()
+    {
+        _animPlaying = false;
+        _renderer.color = _tempColor;
+    }
+
 
     public override int GetHashCode()
     {
@@ -158,6 +184,6 @@ public class Node : IEquatable<Node>
 
     public override string ToString()
     {
-        return $"RequestedNodeWorldPosition: {WorldPosition.ToString()}, RequestedGridPosition: {GridPosition.ToString()}";
+        return $"WorldPosition: {WorldPosition.ToString()}, GridPosition: {GridPosition.ToString()}";
     }
 }

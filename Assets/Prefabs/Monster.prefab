@@ -98,6 +98,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 096fe1d5b1f3af942b1282d6a515ac34, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _currentNode: {fileID: 0}
   _nodeSteppedOnto: {fileID: 11400000, guid: 4c0b81470e8bd304f9e1a420e3cbbea4, type: 2}
   _gridMovementRequest: {fileID: 11400000, guid: 37421fb3b79091a4a91bfb3a849592e0, type: 2}
 --- !u!58 &1183817620347573109

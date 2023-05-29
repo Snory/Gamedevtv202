@@ -38,6 +38,7 @@ public class MonsterMovement : MonoBehaviour
         _nodeSteppedOnto.Raise(new HexGridSteppedOntoNodeEventArgs(_currentNode));
     }
 
+
     public void Move(HexGridDirection direction)
     {
         _gridMovementRequest.Raise(new HexGridMovementRequestEventArgs(_currentNode.GridPosition, direction, OnGridMovement, false));

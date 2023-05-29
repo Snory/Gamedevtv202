@@ -6,14 +6,11 @@ using UnityEngine.UIElements;
 using Random = UnityEngine.Random;
 
 [Serializable]
-public enum HexGridDirection : int { LEFT_TOP = 0, LEFT = 1, LEFT_BOT = 2, RIGHT_TOP = 3, RIGHT = 4, RIGTH_BOT = 5, NONE = 6 }
+public enum HexGridDirection : int { LEFT_TOP = 0, LEFT = 1, LEFT_BOT = 2, RIGHT_TOP = 5, RIGHT = 4, RIGTH_BOT = 3, NONE = 6 }
 
 public class HexGrid : MonoBehaviour
 {
     private Dictionary<Vector2Int, Node> _nodes; // i will not have to think about how to generate it :)
-
-    [SerializeField]
-    private int _gridSize;
 
     [SerializeField]
     private float _hexWidth, _hexHeight;
@@ -34,25 +31,31 @@ public class HexGrid : MonoBehaviour
     private GeneralEvent _gameSessionStateEnd;
 
 
+    [SerializeField]
+    private int[] _gridSizePerLevel;
+
+
     private Vector2Int[] _directionCoords = new Vector2Int[]
     {
-            new Vector2Int(0,-1), //0
+            new Vector2Int(0,-1), // 0
             new Vector2Int(-1,0), //1
             new Vector2Int(-1,1), //2
-            new Vector2Int(1,-1), //3
+            new Vector2Int(0,1), //3
             new Vector2Int(1,0), //4
-            new Vector2Int(0,1), //5
-            new Vector2Int (0,0) //None movement
+            new Vector2Int(1,-1), //5
+            new Vector2Int (0,0)
+
     };
 
     private Vector2Int[] _oppositeDirectionCoords = new Vector2Int[]
     {
+
         new Vector2Int(0,1),
         new Vector2Int(1,0),
         new Vector2Int(1,-1),
-        new Vector2Int(-1,1),
-        new Vector2Int(-1,0),
         new Vector2Int(0,-1),
+        new Vector2Int(-1,0),
+        new Vector2Int(-1,1),
         new Vector2Int (0,0) //None movement
     };
 
@@ -75,6 +78,18 @@ public class HexGrid : MonoBehaviour
         GenerateGrid();
     }
 
+    public void OnGridCircleRequest(EventArgs args)
+    {
+        HexGridCircleNodeRequestEventArgs hexGridCircleNodeRequestEventArgs = args as HexGridCircleNodeRequestEventArgs;
+
+        Node n = GetNodeByWorldPosition(hexGridCircleNodeRequestEventArgs.Position);
+
+        if (n != null)
+        {
+            hexGridCircleNodeRequestEventArgs.CallBack(TryToGetNodeInRing(n, hexGridCircleNodeRequestEventArgs.Range), hexGridCircleNodeRequestEventArgs.Range);
+        }
+    }
+
 
     [ContextMenu("Generate grid")]
     private void GenerateGrid()
@@ -82,13 +97,22 @@ public class HexGrid : MonoBehaviour
         ClearGrid();
 
 
-        List<Node> nodes = NodesInRange(new Vector2Int(0, 0), _gridSize);
-
-        foreach (Node node in nodes)
+        int currentLevel = _gridSizePerLevel.Length;
+        if (LevelManager.Instance.GetCurrentLevel() < _gridSizePerLevel.Length)
         {
-            GameObject hexTileGO = Instantiate(_hexTilePrefab, node.WorldPosition, Quaternion.identity, this.transform);
-            hexTileGO.name = node.GridPosition.ToString();
-            node.SetGameObject(hexTileGO, _nodeSprites[Random.Range(0, _nodeSprites.Length)]);
+            currentLevel = LevelManager.Instance.GetCurrentLevel();
+        }
+
+
+        List<Vector2Int> coordinations = NodesGridCoordinationInRange(new Vector2Int(0, 0), _gridSizePerLevel[currentLevel]);
+
+        foreach (Vector2Int coordination in coordinations)
+        {
+            Vector2 worldPosition = CalculateWorldPosition(coordination.x, coordination.y);
+
+            Node node = Instantiate(_hexTilePrefab, worldPosition, Quaternion.identity, this.transform).GetComponent<Node>();
+            node.gameObject.name = coordination.ToString();
+            node.SetNode(_nodeSprites[Random.Range(0, _nodeSprites.Length)], coordination, worldPosition);
             node.SetHightLight(_visible);
             _nodes.Add(node.GridPosition, node);
         }
@@ -97,9 +121,9 @@ public class HexGrid : MonoBehaviour
 
     }
 
-    private List<Node> NodesInRange(Vector2Int center, int range)
+    private List<Vector2Int> NodesGridCoordinationInRange(Vector2Int center, int range)
     {
-        List<Node> nodes = new List<Node>();
+        List<Vector2Int> nodes = new List<Vector2Int>();
 
         for (int q = -range; q <= range; q++)
         {
@@ -109,16 +133,10 @@ public class HexGrid : MonoBehaviour
 
             for (int r = r1; r <= r2; r++)
             {
-                float axialDistance = Mathf.Abs(q) + Mathf.Abs(r);
-
-
                 int x = center.x + q;
                 int y = center.y + r;
 
-                Vector2Int gridCoordinates = new Vector2Int(x, y);
-                Vector2 worldCoordinates = CalculateWorldPosition(x, y);
-
-                nodes.Add(new Node(gridCoordinates, worldCoordinates, r));
+                nodes.Add(new Vector2Int(x, y));
             }
         }
         return nodes;
@@ -137,27 +155,36 @@ public class HexGrid : MonoBehaviour
         if (hexGridHighlightRequestEventArgs.HighlightSource == NodeHighLightSource.PLAYER)
         {
             Vector2Int currentNodePosition = hexGridHighlightRequestEventArgs.CurrentNode.GridPosition;
-            List<Node> nodesAround = NodesInRange(currentNodePosition, hexGridHighlightRequestEventArgs.Range);
+            List<Vector2Int> nodeCoordsAround = NodesGridCoordinationInRange(currentNodePosition, hexGridHighlightRequestEventArgs.Range);
+
 
             foreach (Node n in _nodes.Values)
             {
-                if (nodesAround.Contains(n) && n != hexGridHighlightRequestEventArgs.CurrentNode)
+                if (n.HighLightSource == NodeHighLightSource.PLAYER)
                 {
-                    n.SetHightLight(true, 0.3f, NodeHighLightSource.PLAYER);
-
-                    Vector2Int coordinates = new Vector2Int(n.GridPosition.x - currentNodePosition.x, n.GridPosition.y - currentNodePosition.y);
-
-                    AudioClip sound = _soundSetting.SoundSettings.Where(st => st.NodeCoordination == new Vector2Int(n.GridPosition.x - currentNodePosition.x, n.GridPosition.y - currentNodePosition.y)).First().Sound;
-                    n.SetClip(sound);
+                    n.SetHightLight(false);
+                    n.SetClip(null);
                 }
-                else
+            }
+
+
+
+            foreach (Vector2Int nodeCoord in nodeCoordsAround)
+            {
+                Node node = TryGetNodeByGridPosition(nodeCoord);
+
+                if (node == null || node == hexGridHighlightRequestEventArgs.CurrentNode)
                 {
-                    if (n.HighLightSource == NodeHighLightSource.PLAYER)
-                    {
-                        n.SetHightLight(false);
-                        n.SetClip(null);
-                    }
+                    continue;
                 }
+
+                node.SetHightLight(true, 0.3f, NodeHighLightSource.PLAYER);
+
+                Vector2Int coordinates = new Vector2Int(node.GridPosition.x - currentNodePosition.x, node.GridPosition.y - currentNodePosition.y);
+
+                AudioClip sound = _soundSetting.SoundSettings.Where(st => st.NodeCoordination == new Vector2Int(node.GridPosition.x - currentNodePosition.x, node.GridPosition.y - currentNodePosition.y)).First().Sound;
+                node.SetClip(sound);
+
             }
 
             hexGridHighlightRequestEventArgs.CurrentNode.SetHightLight(true, 1, NodeHighLightSource.PLAYER);
@@ -170,7 +197,7 @@ public class HexGrid : MonoBehaviour
         {
             foreach (Node node in _nodes.Values)
             {
-                DestroyImmediate(node.GetGameObject());
+                DestroyImmediate(node.gameObject);
             }
         }
         _nodes = new Dictionary<Vector2Int, Node>();
@@ -187,17 +214,14 @@ public class HexGrid : MonoBehaviour
 
     private void RecalculateWorldPosition()
     {
-        Debug.Log("Center of the world" + this.transform.position.ToString());
         foreach (Node n in _nodes.Values)
         {
             n.SetWorldInPosition(CalculateWorldPosition(n.GridPosition.x, n.GridPosition.y));
-            Debug.Log("Calculated RequestedNodeWorldPosition: " + n.ToString());
         }
     }
 
     public void SetGridWorldPosition(Vector3 worldPosition)
     {
-        Debug.Log("Set center of the world: " + worldPosition);
         this.transform.position = worldPosition;
     }
 
@@ -238,14 +262,24 @@ public class HexGrid : MonoBehaviour
     }
 
 
-    public Node GetNodeByGridPosition(Vector2Int gridPosition)
+    public Node TryGetNodeByGridPosition(Vector2Int gridPosition)
     {
-        return _nodes[gridPosition];
+        Node n = null;
+        _nodes.TryGetValue(gridPosition, out n);
+        return n;
     }
 
-    public Node GetNodeInDirection(Node from, Vector2Int direction)
+    public Node TryGetNodeInDirection(Node from, Vector2Int direction)
     {
-        Node n;
+
+
+        Node n = null;
+
+        if (from == null)
+        {
+            return n;
+        }
+
         _nodes.TryGetValue(new Vector2Int(from.GridPosition.x + direction.x, from.GridPosition.y + direction.y), out n);
         return n;
     }
@@ -257,7 +291,7 @@ public class HexGrid : MonoBehaviour
         return direction;
     }
 
-    public Node GetPlayerNode()
+    public Node TryGetPlayerNode()
     {
         Node n = null;
 
@@ -273,21 +307,57 @@ public class HexGrid : MonoBehaviour
         return n;
     }
 
-    public List<Node> GetNeighbours(Node node)
+    public List<Node> TryGetNeighbours(Node node)
     {
         List<Node> nodes = new List<Node>();
 
         foreach (var dir in _directionCoords)
         {
-            Node n = GetNodeInDirection(node, dir);
+            Node n = TryGetNodeInDirection(node, dir);
 
             if (n != null && n != node)
             {
-                nodes.Add(GetNodeInDirection(node, dir));
+                nodes.Add(TryGetNodeInDirection(node, dir));
             }
         }
 
         return nodes;
+    }
+
+    private Vector2Int ScaleDirection(Vector2Int direction, int scale)
+    {
+        return new Vector2Int(direction.x * scale, direction.y * scale);
+    }
+
+    public Vector2Int GetGridCoordinationInDirection(Vector2Int center, Vector2Int direction)
+    {
+        return new Vector2Int(center.x + direction.x, center.y + direction.y);
+    }
+
+    public List<Node> TryToGetNodeInRing(Node center, int range)
+    {
+        List<Node> nodesInRing = new List<Node>();
+
+        Node node = TryGetNodeInDirection(center, ScaleDirection(_directionCoords[4], range));
+        Vector2Int current = GetGridCoordinationInDirection(center.GridPosition, ScaleDirection(_directionCoords[4], range));
+
+
+        for (int i = 0; i < 6; i++)
+        {
+            for (int r = 0; r < range; r++)
+            {
+                if (node != null)
+                {
+                    nodesInRing.Add(node);
+                }
+
+                current = GetGridCoordinationInDirection(current, _directionCoords[i]);
+                node = TryGetNodeByGridPosition(current);
+            }
+        }
+
+
+        return nodesInRing;
     }
 
     public void OnHexGridRequestNode(EventArgs args)

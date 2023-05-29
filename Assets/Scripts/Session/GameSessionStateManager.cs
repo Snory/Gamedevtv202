@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public enum GameSessionState { PLAYER_MOVEMENT, GRID_RECALCULATE, ENEMY_MOVEMENT }
+public enum GameSessionState { TUTORIAL, PLAYER_MOVEMENT, GRID_RECALCULATE, ENEMY_MOVEMENT }
 public enum EntityPrepareType { GRID, MONSTERS, PLAYER }
 
 public class GameSessionStateManager : MonoBehaviour
@@ -16,27 +16,54 @@ public class GameSessionStateManager : MonoBehaviour
     [SerializeField]
     private Dictionary<EntityPrepareType, bool> _preparedEntities;
 
+    private bool _tutorialReady;
+
     private void Awake()
     {
         _preparedEntities = new Dictionary<EntityPrepareType, bool>();
 
-        foreach(var entity in Enum.GetNames(typeof(EntityPrepareType))){
-            _preparedEntities.Add((EntityPrepareType) Enum.Parse(typeof(EntityPrepareType), entity), false);
+        foreach (var entity in Enum.GetNames(typeof(EntityPrepareType)))
+        {
+            _preparedEntities.Add((EntityPrepareType)Enum.Parse(typeof(EntityPrepareType), entity), false);
+        }
+    }
+
+    private void Start()
+    {
+        if (LevelManager.Instance.GetCurrentLevel() > 0)
+        {
+            _tutorialReady = true;
+        }
+        else
+        {
+            _tutorialReady = false;
         }
     }
 
     public void OnSessionStateEnded()
     {
-        Debug.Log("Game session ended: " + _currentState.ToString());
 
-        if (_currentState == GameSessionState.PLAYER_MOVEMENT)
+        if (_currentState == GameSessionState.TUTORIAL)
+        {
+            _tutorialReady = true;
+            ChangeState(GameSessionState.ENEMY_MOVEMENT);
+        }
+        else if (_currentState == GameSessionState.PLAYER_MOVEMENT)
         {
             ChangeState(GameSessionState.GRID_RECALCULATE);
-        }  
+        }
         else if (_currentState == GameSessionState.GRID_RECALCULATE)
         {
-            ChangeState(GameSessionState.ENEMY_MOVEMENT);
-        } else
+            if (_tutorialReady)
+            {
+                ChangeState(GameSessionState.ENEMY_MOVEMENT);
+            } else
+            {
+                ChangeState(GameSessionState.TUTORIAL);
+            }
+
+        }
+        else if (_currentState == GameSessionState.ENEMY_MOVEMENT)
         {
             ChangeState(GameSessionState.PLAYER_MOVEMENT);
         }
@@ -45,8 +72,7 @@ public class GameSessionStateManager : MonoBehaviour
     public void OnEntityPrepared(EventArgs args)
     {
         EntityPreparedEventArgs entityPreparedEventArgs = (EntityPreparedEventArgs)args;
-        Debug.Log("Entity prepared: " + entityPreparedEventArgs.EntityPrepareType);
-        _preparedEntities[entityPreparedEventArgs.EntityPrepareType] =  true;
+        _preparedEntities[entityPreparedEventArgs.EntityPrepareType] = true;
         StartIfReady();
     }
 
@@ -54,7 +80,7 @@ public class GameSessionStateManager : MonoBehaviour
     {
         bool ready = true;
 
-        foreach(var r in _preparedEntities.Values)
+        foreach (var r in _preparedEntities.Values)
         {
             if (!r)
             {
@@ -66,7 +92,6 @@ public class GameSessionStateManager : MonoBehaviour
 
         if (ready)
         {
-            Debug.Log("Game ready");
             ChangeState(GameSessionState.PLAYER_MOVEMENT); //start with player movement
         }
     }
@@ -74,7 +99,6 @@ public class GameSessionStateManager : MonoBehaviour
     private void ChangeState(GameSessionState newState)
     {
         _currentState = newState;
-        Debug.Log("Session change state raised: " + _currentState.ToString());
         _sessionStarted.Raise(new GameSessionStateEventArgs(_currentState));
     }
 }

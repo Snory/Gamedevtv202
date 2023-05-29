@@ -6,6 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.Events;
+
 public class MonsterMover : MonoBehaviour
 {
 
@@ -16,7 +18,13 @@ public class MonsterMover : MonoBehaviour
     private GeneralEvent _gameSessionStateEnd;
 
     [SerializeField]
+    private GeneralEvent _gameWon, _gameFinished;
+
+    [SerializeField]
     private bool _initialized;
+
+    public UnityEvent<int> CurrentTurn;
+
 
     public void OnMonstersGenerated(EventArgs args)
     {
@@ -30,6 +38,12 @@ public class MonsterMover : MonoBehaviour
             _monsterMovements.Add(monsterMovement);
         }
     }
+
+    public int GetMonsterMoverCount()
+    {
+        return _monsterMovements.Count;
+    }
+
 
     public void OnGameSessionStateStart(EventArgs args)
     {
@@ -49,12 +63,11 @@ public class MonsterMover : MonoBehaviour
 
     private IEnumerator MonsterMovementRoutine()
     {
-        int monstersMoved = 0;
+        int monstersMoved = _monsterMovements.Count - 1;
 
-        Debug.Log("Count of monsters:" + _monsterMovements.Count);
-
-        while (monstersMoved < _monsterMovements.Count)
+        while (monstersMoved >= 0)
         {
+            CurrentTurn?.Invoke(monstersMoved);
             MonsterMovement monsterMovement = _monsterMovements[monstersMoved];
 
             if (!_initialized)
@@ -65,8 +78,7 @@ public class MonsterMover : MonoBehaviour
                 monsterMovement.Move(); //move to player
             }
 
-            monstersMoved++;
-            Debug.Log("MonsterMoved: " + monstersMoved +", MonsterCount: " + _monsterMovements.Count);
+            monstersMoved--;
             yield return new WaitForSeconds(1);
         }
 
@@ -83,6 +95,18 @@ public class MonsterMover : MonoBehaviour
         {
             _monsterMovements.Remove(monsterMovement);
         }
+
+        if(_monsterMovements.Count == 0)
+        {
+            if (LevelManager.Instance.Lastlevel())
+            {
+                _gameFinished.Raise();
+            } else
+            {
+                _gameWon.Raise();
+            }
+        }
+
     }
 
     private void EndTurn()

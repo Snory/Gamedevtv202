@@ -25,11 +25,13 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField]
     private GeneralEvent _entityPrepared;
 
+    private int _countOfTurns;
 
     private Node _currentNode;
 
     private bool _initialized;
 
+    [SerializeField]
     private bool _enabled;
 
 
@@ -81,14 +83,15 @@ public class PlayerMovement : MonoBehaviour
 
         GameSessionStateEventArgs gameSessionStateEventArgs = (GameSessionStateEventArgs) args;
 
-        if(gameSessionStateEventArgs.State == GameSessionState.PLAYER_MOVEMENT)
+
+        if (gameSessionStateEventArgs.State == GameSessionState.PLAYER_MOVEMENT)
         {
+            _countOfTurns++;
             _enabled = true;
 
             if (!_initialized)
             {
                 _initialized = true;
-                Debug.Log("Initialized: " + _initialized);
                 RaiseMovementRequest(_playerStartingPosition, HexGridDirection.NONE);
             }          
         } 
@@ -120,13 +123,16 @@ public class PlayerMovement : MonoBehaviour
             _currentNode.SetPlayerObject(this.gameObject);
             RaiseHighLightRequest(); 
             EndTurn();
+        } else
+        {
+            Debug.Log("Playermovement[" + _countOfTurns + "]  node not found");
         }
     }
 
     private void EndTurn()
     {
-        _gameSessionStateEnd.Raise();
         _enabled = false;
+        _gameSessionStateEnd.Raise();
     }
 
     private void RaiseHighLightRequest()

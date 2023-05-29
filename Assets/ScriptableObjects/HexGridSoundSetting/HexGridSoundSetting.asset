@@ -13,39 +13,57 @@ MonoBehaviour:
   m_Name: HexGridSoundSetting
   m_EditorClassIdentifier: 
   SoundSettings:
-  - NodeCoordination: {x: 0, y: -2}
+  - Range: 1
+    NodeCoordination: {x: 0, y: -2}
     Sound: {fileID: 8300000, guid: c5bde318a7dca4d4cb2d3ac42c876154, type: 3}
-  - NodeCoordination: {x: 1, y: -2}
+  - Range: 2
+    NodeCoordination: {x: 1, y: -2}
     Sound: {fileID: 8300000, guid: ff9ef9c778f22ae46be1849d0e166f51, type: 3}
-  - NodeCoordination: {x: 2, y: -2}
+  - Range: 3
+    NodeCoordination: {x: 2, y: -2}
     Sound: {fileID: 8300000, guid: 919f93cd22f2d2b4ab9c5177e91e9812, type: 3}
-  - NodeCoordination: {x: 2, y: -1}
+  - Range: 4
+    NodeCoordination: {x: 2, y: -1}
     Sound: {fileID: 8300000, guid: 917f8bf615bb8be4bb140545f21429d6, type: 3}
-  - NodeCoordination: {x: 2, y: 0}
+  - Range: 5
+    NodeCoordination: {x: 2, y: 0}
     Sound: {fileID: 8300000, guid: 8ab9e5500ac691b4a94751a123ae6af6, type: 3}
-  - NodeCoordination: {x: 1, y: 1}
+  - Range: 6
+    NodeCoordination: {x: 1, y: 1}
     Sound: {fileID: 8300000, guid: 8b39a78b9849617449199eba0132d10c, type: 3}
-  - NodeCoordination: {x: 0, y: 2}
+  - Range: 7
+    NodeCoordination: {x: 0, y: 2}
     Sound: {fileID: 8300000, guid: 73fae9221cbf8794eb837362dadbd626, type: 3}
-  - NodeCoordination: {x: -1, y: 2}
+  - Range: 8
+    NodeCoordination: {x: -1, y: 2}
     Sound: {fileID: 8300000, guid: 6b135cd5ed572f54f87e0aed92f8fef2, type: 3}
-  - NodeCoordination: {x: -2, y: 2}
+  - Range: 9
+    NodeCoordination: {x: -2, y: 2}
     Sound: {fileID: 8300000, guid: dca33f5e16f7a234a86e8112c25f23ab, type: 3}
-  - NodeCoordination: {x: -2, y: 1}
+  - Range: 10
+    NodeCoordination: {x: -2, y: 1}
     Sound: {fileID: 8300000, guid: 552c5df15b2feae4e98a8bb3295b5d11, type: 3}
-  - NodeCoordination: {x: -2, y: 0}
+  - Range: 11
+    NodeCoordination: {x: -2, y: 0}
     Sound: {fileID: 8300000, guid: 97c531fb585490440859bac782033a3f, type: 3}
-  - NodeCoordination: {x: -1, y: -1}
+  - Range: 12
+    NodeCoordination: {x: -1, y: -1}
     Sound: {fileID: 8300000, guid: 4e2b39f11fe183d4a912d8a2bb8c305c, type: 3}
-  - NodeCoordination: {x: 0, y: -1}
+  - Range: 13
+    NodeCoordination: {x: 0, y: -1}
     Sound: {fileID: 8300000, guid: 5f7061b9efab7da4fb850a379ee9a104, type: 3}
-  - NodeCoordination: {x: 1, y: -1}
+  - Range: 14
+    NodeCoordination: {x: 1, y: -1}
     Sound: {fileID: 8300000, guid: 96de585aed6a1cb4087c8b0cc1c2b748, type: 3}
-  - NodeCoordination: {x: 1, y: 0}
+  - Range: 15
+    NodeCoordination: {x: 1, y: 0}
     Sound: {fileID: 8300000, guid: 7fc4503c05bd372468d46fa48ff1dbf3, type: 3}
-  - NodeCoordination: {x: 0, y: 1}
+  - Range: 16
+    NodeCoordination: {x: 0, y: 1}
     Sound: {fileID: 8300000, guid: 492725fd077adea45ac0daf84085c6e0, type: 3}
-  - NodeCoordination: {x: -1, y: 1}
+  - Range: 17
+    NodeCoordination: {x: -1, y: 1}
     Sound: {fileID: 8300000, guid: 4d5aac83115ee0a4982816ad978b45dc, type: 3}
-  - NodeCoordination: {x: -1, y: 0}
+  - Range: 18
+    NodeCoordination: {x: -1, y: 0}
     Sound: {fileID: 8300000, guid: 736be8c4a76745a499f3cfe936e18aab, type: 3}

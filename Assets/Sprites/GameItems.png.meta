@@ -135,7 +135,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 167
+        y: 326
         width: 216
         height: 144
       alignment: 0
@@ -156,7 +156,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 491
-        y: 217
+        y: 377
         width: 83
         height: 83
       alignment: 0
@@ -177,7 +177,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 490
-        y: 117
+        y: 276
         width: 84
         height: 83
       alignment: 0
@@ -198,7 +198,7 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 493
-        y: 16
+        y: 175
         width: 74
         height: 89
       alignment: 0
@@ -219,8 +219,8 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 235
-        y: 166
-        width: 215
+        y: 325
+        width: 216
         height: 145
       alignment: 0
       pivot: {x: 0.5, y: 0.5}
@@ -240,11 +240,11 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 0
-        width: 213
-        height: 140
+        y: 156
+        width: 216
+        height: 145
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -260,12 +260,12 @@ TextureImporter:
       name: GameItems_3
       rect:
         serializedVersion: 2
-        x: 233
-        y: 1
-        width: 215
-        height: 139
+        x: 232
+        y: 156
+        width: 216
+        height: 145
       alignment: 0
-      pivot: {x: 0, y: 0}
+      pivot: {x: 0.5, y: 0.5}
       border: {x: 0, y: 0, z: 0, w: 0}
       outline: []
       physicsShape: []
@@ -273,6 +273,27 @@ TextureImporter:
       bones: []
       spriteID: 30588560c7c432d4caf8339cf2d0ec80
       internalID: -812259528
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: GameItems_4
+      rect:
+        serializedVersion: 2
+        x: 0
+        y: 0
+        width: 192
+        height: 120
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      outline: []
+      physicsShape: []
+      tessellationDetail: 0
+      bones: []
+      spriteID: 909088e52734e5047bd94911bab2e3f9
+      internalID: -610975913
       vertices: []
       indices: 
       edges: []
@@ -292,6 +313,7 @@ TextureImporter:
       GameItems_1: -1219084347
       GameItems_2: 1697128064
       GameItems_3: -812259528
+      GameItems_4: -610975913
       Left: -1010787705
       LeftBot: -706057670
       LeftTop: 1561654783

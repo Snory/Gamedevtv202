@@ -19,21 +19,21 @@ public class HexGridMovement : MonoBehaviour
         HexGridMovementRequestEventArgs gridMovementRequestEventArgs = args as HexGridMovementRequestEventArgs;
 
         //Get the node where they are standing
-        Node currentNode = _grid.GetNodeByGridPosition(gridMovementRequestEventArgs.FromPosition);
+        Node currentNode = _grid.TryGetNodeByGridPosition(gridMovementRequestEventArgs.FromPosition);
 
         //ok, do whatever they want with the target node
         Node targetnode = null;
-        
-        if(gridMovementRequestEventArgs.RequestType == HexGridMovementRequestType.DIRECTION)
+
+
+        if (gridMovementRequestEventArgs.RequestType == HexGridMovementRequestType.DIRECTION)
         {
-            targetnode = _grid.GetNodeInDirection(currentNode, _grid.GetGridDirection(gridMovementRequestEventArgs.Direction));
+            targetnode = _grid.TryGetNodeInDirection(currentNode, _grid.GetGridDirection(gridMovementRequestEventArgs.Direction));
         } else
         {
-            List<Node> path = CalculatePathToNode(currentNode, _grid.GetPlayerNode());
+            List<Node> path = CalculatePathToNode(currentNode, _grid.TryGetPlayerNode());
 
             if(path.Count > 0)
             {
-                Debug.Log("Path count > 0");
                 targetnode = path[0];
             }
         }
@@ -45,7 +45,7 @@ public class HexGridMovement : MonoBehaviour
 
             if(currentCenterNode != null)
             {
-                Node oppositeToTargetNode = _grid.GetNodeInDirection(currentCenterNode, _grid.GetGridOppositeDirection(gridMovementRequestEventArgs.Direction));
+                Node oppositeToTargetNode = _grid.TryGetNodeInDirection(currentCenterNode, _grid.GetGridOppositeDirection(gridMovementRequestEventArgs.Direction));
                 _grid.SetGridWorldPosition(oppositeToTargetNode.WorldPosition);
             }
         }        
@@ -56,7 +56,6 @@ public class HexGridMovement : MonoBehaviour
 
     public List<Node> CalculatePathToNode(Node start, Node end)
     {
-        Debug.Log("Calculating path from: " + start.ToString() + " to " + end.ToString());
 
         List<Node> open = new List<Node>();
         List<Node> close = new List<Node>();
@@ -78,7 +77,7 @@ public class HexGridMovement : MonoBehaviour
                 break;
             }
 
-            List<Node> nodes = _grid.GetNeighbours(currentNode);
+            List<Node> nodes = _grid.TryGetNeighbours(currentNode);
 
             foreach (Node neighbor in nodes)
             {
